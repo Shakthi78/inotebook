@@ -14,6 +14,7 @@ router.post('/createuser',[
     body('email', 'Enter a valid email').isEmail(),
     body('password', 'Password must be min 5').isLength({ min: 5 }),
 ], async(req, res)=>{
+    let success = false
     //If errors return bad request
     const result = validationResult(req);
     if(!result.isEmpty()){
@@ -24,7 +25,7 @@ router.post('/createuser',[
     try {
     let user = await User.findOne({email: req.body.email})
     if(user){
-        return res.status(400).json({error: "Email already exist"})
+        return res.status(400).json({success, error: "Email already exist"})
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -43,7 +44,8 @@ router.post('/createuser',[
     }
 
     const authToken = jwt.sign(data, JWT_SECRET)
-    res.json({authToken})
+    success = true
+    res.json({success,authToken})
     // res.json(user)
     } catch (error) {
         console.error(error.message) 
@@ -59,7 +61,7 @@ router.post('/login',[
     body('email', 'Enter a valid email').isEmail(),
     body('password', 'Password cannot be blank').exists(),
 ], async(req, res)=>{
-
+    let success = false
     //If errors return bad request
     const result = validationResult(req);
     if(!result.isEmpty()){
@@ -72,13 +74,13 @@ router.post('/login',[
     try {
     let user = await User.findOne({email})
     if(!user){
-        return res.status(400).json({error:"User does not exist"})
+        return res.status(400).json({success, error:"User does not exist"})
     }
 
     //Comparing the entered password with the user password
     const passwordCompare = await bcrypt.compare(password, user.password)
     if(!passwordCompare){
-        return res.status(400).json({error:"Wrong password"})
+        return res.status(400).json({success, error:"Wrong password"})
     }
 
     const data = {
@@ -88,7 +90,8 @@ router.post('/login',[
     }
 
     const authToken = jwt.sign(data, JWT_SECRET)
-    res.json({authToken})
+    success = true
+    res.json({success, authToken})
 
     } catch (error) {
         console.error(error.message) 

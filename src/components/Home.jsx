@@ -1,14 +1,10 @@
-import React, { useContext, useEffect } from 'react'
-import noteContext from '../context/notes/noteContext'
+import React from 'react'
+import Notes from './Notes'
 
-const Home = () => {
-  const a = useContext(noteContext)
-  useEffect(() => {
-    a.update();
-  }, [])
+const Home = ({showAlert}) => { 
   return (
     <div>
-        Home {a.state.name}        
+      <Notes showAlert={showAlert}/>
     </div>
   )
 }

@@ -1,12 +1,15 @@
-import React, { useContext } from 'react'
-import noteContext from '../context/notes/noteContext'
-
+import React from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const About = () => {
-const a = useContext(noteContext)
+  const navigate = useNavigate()
+  const handleClick = () => {
+    navigate("/")
+  }
   return (
-    <div>
-        Hii iam {a.state.name}
+    <div style={{display: "block"}}>
+        <p>You are not allowed to come here</p>
+        <button onClick={handleClick} type="submit" className="btn btn-primary" >Ok</button>
     </div>
   )
 }
